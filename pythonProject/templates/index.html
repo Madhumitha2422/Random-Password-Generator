@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Random Password Generator</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <style>
+        body {
+            background-image: url('../static/security.jpg');
+            background-size: cover;
+            color: white;
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .main-container {
+            background: rgba(0, 0, 0, 0.7);
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+        }
+
+        #length {
+            background: linear-gradient(to right, #5E4B99, #B0B0FF);
+            color: white;
+            border: none;
+            outline: none;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        }
+
+        #lengthValue {
+            font-weight: bold;
+            color: #FFD700;
+        }
+
+        .jumbotron {
+            background: rgba(255, 255, 255, 0.5);
+            transition: background 0.3s;
+        }
+
+        .jumbotron:hover {
+            background: rgba(255, 255, 255, 0.7);
+        }
+
+        button {
+            background: #800080;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background: #FFD700;
+        }
+
+        .form-group {
+            transition: background 0.3s;
+        }
+
+        .form-group:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .output-card {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+            display: flex;
+            justify-content: space-between; /* Place content at the ends of the box */
+        }
+
+        .output-card:hover {
+            background: rgba(255, 255, 255, 0.4);
+        }
+
+        #generatedPassword {
+            font-weight: bold;
+            display: inline; /* to place the copy button inline */
+        }
+
+        #copyButton {
+            background: #007BFF;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        #copyButton:hover {
+            background: #0056b3;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-md-6 main-container">
+            <div class="jumbotron text-center">
+                <h1 class="display-4">Random Password Generator</h1>
+            </div>
+
+            {% if error %}
+                <div class="alert alert-danger" role="alert">
+                    {{ error }}
+                </div>
+            {% endif %}
+
+            <form action="/generate" method="post">
+                <div class="form-group">
+                    <label for="length">Password Length:</label>
+                    <input type="range" class="form-control-range" id="length" name="length" min="6" max="100" value="{{ password_length }}" required>
+                    <small class="text-muted">Length: <span id="lengthValue">{{ password_length }}</span></small>
+                </div>
+                <button type="submit" class="btn btn-primary">Generate Password</button>
+            </form>
+
+            {% if password %}
+                <div class="mt-4">
+                    <h2>Your Generated Password:</h2>
+                    <div class="output-card" id="outputCard">
+                        <p id="generatedPassword">{{ password }}</p>
+                        <button id="copyButton" onclick="copyToClipboard()">Copy</button>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+<script>
+    // Update slider value display
+    var slider = document.getElementById("length");
+    var output = document.getElementById("lengthValue");
+    output.innerHTML = slider.value;
+
+    slider.oninput = function() {
+        output.innerHTML = this.value;
+    };
+
+    // Copy to clipboard function
+    function copyToClipboard() {
+        var generatedPassword = document.getElementById("generatedPassword");
+        var textArea = document.createElement("textarea");
+        textArea.value = generatedPassword.innerText;
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand("Copy");
+        document.body.removeChild(textArea);
+        alert("Password copied to clipboard!");
+    }
+</script>
+
+</body>
+</html>
